@@ -84,3 +84,30 @@ Attentive / Distracted
             │
             ▼
      Final Report
+
+
+# Finalized Artitecture
+
+
+
+     Uploaded Video
+     ↓
+Video Processor
+     ↓
+Frame Sampling
+     ↓
+Face Detection
+     ↓
+Face Mesh
+     ↓
+EAR Calculation
+     ↓
+Head Pose Estimation
+     ↓
+Attention Scoring
+     ↓
+Frame-Level Classification
+     ↓
+Video-Level Classification
+     ↓
+Statistics Generation

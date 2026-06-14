@@ -29,10 +29,8 @@ import cv2
 
 def load_video(video_path):
     cap = cv2.VideoCapture(video_path)
-
     if not cap.isOpened():
         raise ValueError(f"Cannot open video: {video_path}")
-
     return cap
 
 
@@ -46,10 +44,8 @@ def get_total_frames(cap):
 
 def get_duration(cap):
     fps = get_fps(cap)
-
     if fps == 0:
         return 0
-
     return get_total_frames(cap) / fps
 
 
@@ -59,17 +55,23 @@ def read_frames(cap, skip_frames=5):
     """
 
     frame_count = 0
-
     while True:
-
         ret, frame = cap.read()
-
         if not ret:
             break
-
         if frame_count % skip_frames == 0:
             yield frame
-
         frame_count += 1
-
     cap.release()
+
+
+video_path = r"DataSet/Test/500044/5000441001/5000441001.avi"
+cap = load_video(video_path)
+print("FPS:", get_fps(cap))
+print("Frames:", get_total_frames(cap))
+print("Duration:", get_duration(cap))
+processed = 0
+for frame in read_frames(cap, skip_frames=5):
+    processed += 1
+
+print("Processed Frames:", processed)
