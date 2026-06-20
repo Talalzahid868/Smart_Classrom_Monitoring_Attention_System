@@ -34,48 +34,42 @@ class VideoClassifier:
             if len(faces) == 0:
                 continue
 
-            landmarks = faces[0]
+           # landmarks = faces[0]
+            for landmarks in faces:
 
-            # EAR
-            left_eye = [landmarks[i] for i in LEFT_EYE]
-            right_eye = [landmarks[i] for i in RIGHT_EYE]
+                # EAR
+                left_eye = [landmarks[i] for i in LEFT_EYE]
+                right_eye = [landmarks[i] for i in RIGHT_EYE]
+                left_ear = calculate_ear(left_eye)
+                right_ear = calculate_ear(right_eye)
+                ear = (left_ear + right_ear) / 2
 
-            left_ear = calculate_ear(left_eye)
-            right_ear = calculate_ear(right_eye)
+                # Head Pose
+                pose = self.pose_estimator.estimate_pose(
+                    landmarks,
+                    frame.shape
+                )
 
-            ear = (left_ear + right_ear) / 2
+                if pose is None:
+                    continue
 
-            # Head Pose
-            pose = self.pose_estimator.estimate_pose(
-                landmarks,
-                frame.shape
-            )
+                pitch, yaw, roll = pose
 
-            if pose is None:
-                continue
+                # Attention Decision
+                label, score = self.scorer.classify(
+                    ear,
+                    yaw,
+                    pitch
+                )
 
-            pitch, yaw, roll = pose
+                if label == "Attentive":
+                    attentive_count += 1
+                else:
+                    distracted_count += 1
 
-            # Attention Decision
-            label, score = self.scorer.classify(
-                ear,
-                yaw,
-                pitch
-            )
+                total_processed += 1
 
-            if label == "Attentive":
-                attentive_count += 1
-            else:
-                distracted_count += 1
-
-            total_processed += 1
-
-            print(
-            f"EAR={ear:.3f}, "
-            f"Yaw={yaw:.2f}, "
-            f"Pitch={pitch:.2f}, "
-            f"Label={label}"
-        )
+            print(f"EAR={ear:.3f}, "f"Yaw={yaw:.2f}, "f"Pitch={pitch:.2f}, "f"Label={label}")
 
 
         if total_processed == 0:
@@ -101,26 +95,26 @@ class VideoClassifier:
 
 
       
+if __name__=="__main__":
 
 
+    dataset = load_dataset(
+        "DataSet/Attention_labels.csv",
+        "DataSet"
+    )
 
-dataset = load_dataset(
-    "DataSet/Attention_labels.csv",
-    "DataSet"
-)
+    sample = dataset[0]
 
-sample = dataset[0]
+    print("Video:", sample["Clip_id"])
+    print("Ground Truth:", sample["label"])
 
-print("Video:", sample["Clip_id"])
-print("Ground Truth:", sample["label"])
+    classifier = VideoClassifier()
 
-classifier = VideoClassifier()
+    result = classifier.classify_video(
+        sample["video_path"]
+    )
 
-result = classifier.classify_video(
-    sample["video_path"]
-)
-
-print(result)
+    print(result)
 
 
 

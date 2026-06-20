@@ -1,6 +1,13 @@
 venv/
 DataSet/
+temp/
+Annotated_Videos/
 __pycache__/
 *.pyc
 .DS_Store
 .vscode/
+
+# Added asterisks so it catches these extensions anywhere in the project
+*.csv
+*.mp4
+*.avi

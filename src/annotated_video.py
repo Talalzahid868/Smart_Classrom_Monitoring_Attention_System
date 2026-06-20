@@ -143,19 +143,19 @@ class AnnotatedVideoGenerator:
 
 
 
+if __name__=="__main__":
 
 
+    dataset = load_dataset(
+        "DataSet/Attention_labels.csv",
+        "DataSet"
+    )
 
-dataset = load_dataset(
-    "DataSet/Attention_labels.csv",
-    "DataSet"
-)
+    sample = dataset[0]
 
-sample = dataset[0]
+    generator = AnnotatedVideoGenerator()
 
-generator = AnnotatedVideoGenerator()
-
-generator.generate(
-    sample["video_path"],
-    "output_annotated.avi"
-)
+    generator.generate(
+        sample["video_path"],
+        "output_annotated.avi"
+    )

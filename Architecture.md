@@ -111,3 +111,32 @@ Frame-Level Classification
 Video-Level Classification
      ↓
 Statistics Generation
+
+Dataset loading
+✅ Video processing
+✅ Face detection
+✅ Landmark extraction
+✅ EAR calculation
+✅ Head pose estimation
+✅ Attention scoring
+✅ Single-student classification
+✅ Multi-student classification
+✅ Face tracking
+✅ Report generation
+✅ Annotated video generation
+
+dataset_loader.py
+↓
+video_processor.py
+↓
+landmarks.py
+↓
+ear.py
+↓
+head_pose.py
+↓
+attention_score.py
+↓
+video_classifier.py
+↓
+report_generator.py
