@@ -1,8 +1,8 @@
 import math
 import cv2
-from datasetloader import load_dataset
-from video_processor import load_video, read_frames
-from landmarks import FaceMeshDetector
+from .datasetloader import load_dataset
+from .video_processor import load_video, read_frames
+from .landmarks import FaceMeshDetector
 
 def euclidean_distance(p1, p2):
 

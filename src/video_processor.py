@@ -27,10 +27,10 @@ def read_frames(cap, skip_frames=5):
     """
     frame_count = 0
     while True:
-        ret, frame = cap.read()
+        ret,frame = cap.read()
         if not ret:
             break
-        if frame_count % skip_frames == 0:
+        if frame_count % skip_frames==0:
             yield frame
         frame_count += 1
     # cap.release()
@@ -38,6 +38,7 @@ def read_frames(cap, skip_frames=5):
 if __name__=="__main__":
     video_path = r"DataSet/Test/500044/5000441001/5000441001.avi"
     cap = load_video(video_path)
+    print("cap:",cap.read())
     print("FPS:", get_fps(cap))
     print("Frames:", get_total_frames(cap))
     print("Duration:", get_duration(cap))

@@ -1,5 +1,5 @@
-from datasetloader import load_dataset
-from video_classifier import VideoClassifier
+from .datasetloader import load_dataset
+from .video_classifier import VideoClassifier
 from sklearn.metrics import accuracy_score, classification_report
 import random
 

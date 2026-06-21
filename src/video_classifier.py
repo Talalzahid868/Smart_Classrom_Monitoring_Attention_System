@@ -1,9 +1,9 @@
-from video_processor import load_video, read_frames
-from landmarks import FaceMeshDetector
-from EAR import calculate_ear
-from head_pose import HeadPoseEstimator
-from attention_score import AttentionScorer
-from datasetloader import load_dataset
+from .video_processor import load_video, read_frames
+from .landmarks import FaceMeshDetector
+from .EAR import calculate_ear
+from .head_pose import HeadPoseEstimator
+from .attention_score import AttentionScorer
+from .datasetloader import load_dataset
 
 
 

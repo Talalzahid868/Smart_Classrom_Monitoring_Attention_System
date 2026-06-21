@@ -1,8 +1,8 @@
 import cv2
 import numpy as np
-from datasetloader import load_dataset
-from video_processor import load_video, read_frames
-from landmarks import FaceMeshDetector
+from .datasetloader import load_dataset
+from .video_processor import load_video, read_frames
+from .landmarks import FaceMeshDetector
 
 
 class HeadPoseEstimator:

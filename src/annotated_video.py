@@ -1,11 +1,11 @@
 import cv2
 
-from video_processor import load_video, get_fps
-from landmarks import FaceMeshDetector
-from EAR import calculate_ear
-from head_pose import HeadPoseEstimator
-from attention_score import AttentionScorer
-from datasetloader import load_dataset
+from .video_processor import load_video, get_fps
+from .landmarks import FaceMeshDetector
+from .EAR import calculate_ear
+from .head_pose import HeadPoseEstimator
+from .attention_score import AttentionScorer
+from .datasetloader import load_dataset
 
 
 LEFT_EYE = [33, 160, 158, 133, 153, 144]

@@ -1,7 +1,7 @@
 import cv2
 import mediapipe as mp
-from datasetloader import load_dataset
-from video_processor import load_video, read_frames
+from .datasetloader import load_dataset
+from .video_processor import load_video, read_frames
 
 
 mp_face_mesh = mp.solutions.face_mesh

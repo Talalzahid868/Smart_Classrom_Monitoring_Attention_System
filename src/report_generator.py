@@ -1,6 +1,6 @@
 import pandas as pd
-from video_classifier import VideoClassifier
-from datasetloader import load_dataset
+from .video_classifier import VideoClassifier
+from .datasetloader import load_dataset
 
 
 class ReportGenerator:
