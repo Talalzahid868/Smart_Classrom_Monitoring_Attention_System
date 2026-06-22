@@ -6,7 +6,6 @@ from .datasetloader import load_dataset
 class ReportGenerator:
     def __init__(self):
         self.classifier = VideoClassifier()
-
     def generate_report(self, dataset, output_file="report.csv"):
         report_data = []
         for sample in dataset:
@@ -27,16 +26,12 @@ class ReportGenerator:
                 "distracted_frames": result["distracted_frames"],
                 "attention_rate": result["attention_rate"]
             })
-
         df = pd.DataFrame(report_data)
         df.to_csv(output_file, index=False)
         print(f"Report saved to {output_file}")
         return df
-
 dataset = load_dataset("DataSet/Attention_labels.csv","DataSet")
-
 generator= ReportGenerator()
-
 report=generator.generate_report(dataset[:10],"attention_report.csv")
 print(report) 
 

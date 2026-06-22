@@ -8,9 +8,7 @@ from .landmarks import FaceMeshDetector
 class HeadPoseEstimator:
 
     def estimate_pose(self, landmarks, frame_shape):
-
         h, w = frame_shape[:2]
-
         image_points = np.array([
             landmarks[1],      # Nose tip
             landmarks[152],    # Chin
@@ -41,7 +39,6 @@ class HeadPoseEstimator:
 
         if not success:
             return None
-
         rotation_matrix, _ = cv2.Rodrigues(rotation_vector)
         angles, _, _, _, _, _ = cv2.RQDecomp3x3(rotation_matrix)
         pitch = angles[0]
@@ -52,10 +49,8 @@ class HeadPoseEstimator:
 
         if pitch > 90:
             pitch = pitch - 180
-
         elif pitch < -90:
             pitch = pitch + 180
-
         return pitch, yaw, roll
     
 
@@ -69,18 +64,17 @@ head_pose = HeadPoseEstimator()
 for frame in read_frames(cap, skip_frames=30):
 
     faces = mesh.get_landmarks(frame)
+    #print(faces)
     if len(faces) > 0:
         landmarks = faces[0]
         pose = head_pose.estimate_pose(landmarks,frame.shape)
 
         if pose:
-
             pitch, yaw, roll = pose
             print(f"Pitch: {pitch:.2f}, "f"Yaw: {yaw:.2f}, "f"Roll: {roll:.2f}")
-
             cv2.putText(frame,f"Yaw:{yaw:.1f}",(20, 40),cv2.FONT_HERSHEY_SIMPLEX,0.7,(0,255,0),2)
-
             cv2.putText(frame,f"Pitch:{pitch:.1f}",(20, 80),cv2.FONT_HERSHEY_SIMPLEX,0.7,(0,255,0),2)
+            cv2.putText(frame,f"Roll:{roll:.1f}",(20, 120),cv2.FONT_HERSHEY_SIMPLEX,0.7,(0,255,0),2)
 
     cv2.imshow("Head Pose", frame)
     key = cv2.waitKey(0)

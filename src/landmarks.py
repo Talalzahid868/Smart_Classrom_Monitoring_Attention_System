@@ -61,10 +61,8 @@ class FaceMeshDetector:
 if __name__=="__main__":
     
     dataset = load_dataset("DataSet/Attention_labels.csv","DataSet")
-
     sample = dataset[0]
     print("Testing:", sample["Clip_id"])
-
     cap = load_video(sample["video_path"])
     mesh_detector = FaceMeshDetector()
     for frame in read_frames(cap, skip_frames=30):

@@ -5,14 +5,10 @@ from .head_pose import HeadPoseEstimator
 from .attention_score import AttentionScorer
 from .datasetloader import load_dataset
 
-
-
 LEFT_EYE = [33, 160, 158, 133, 153, 144]
 RIGHT_EYE = [362, 385, 387, 263, 373, 380]
 
-
 class VideoClassifier:
-
     def __init__(self):
 
         self.mesh = FaceMeshDetector()
@@ -20,13 +16,10 @@ class VideoClassifier:
         self.scorer = AttentionScorer()
 
     def classify_video(self, video_path):
-
         cap = load_video(video_path)
-
         attentive_count = 0
         distracted_count = 0
         total_processed = 0
-
         for frame in read_frames(cap, skip_frames=5):
 
             faces = self.mesh.get_landmarks(frame)
@@ -45,10 +38,7 @@ class VideoClassifier:
                 ear = (left_ear + right_ear) / 2
 
                 # Head Pose
-                pose = self.pose_estimator.estimate_pose(
-                    landmarks,
-                    frame.shape
-                )
+                pose = self.pose_estimator.estimate_pose(landmarks,frame.shape)
 
                 if pose is None:
                     continue
@@ -56,11 +46,7 @@ class VideoClassifier:
                 pitch, yaw, roll = pose
 
                 # Attention Decision
-                label, score = self.scorer.classify(
-                    ear,
-                    yaw,
-                    pitch
-                )
+                label, score = self.scorer.classify(ear,yaw,pitch)
 
                 if label == "Attentive":
                     attentive_count += 1
@@ -92,28 +78,14 @@ class VideoClassifier:
             "attention_rate": round(attention_rate, 2),
             "final_label": final_label
         }
-
-
-      
+          
 if __name__=="__main__":
-
-
-    dataset = load_dataset(
-        "DataSet/Attention_labels.csv",
-        "DataSet"
-    )
-
+    dataset = load_dataset("DataSet/Attention_labels.csv","DataSet")
     sample = dataset[0]
-
     print("Video:", sample["Clip_id"])
     print("Ground Truth:", sample["label"])
-
     classifier = VideoClassifier()
-
-    result = classifier.classify_video(
-        sample["video_path"]
-    )
-
+    result = classifier.classify_video(sample["video_path"])
     print(result)
 
 

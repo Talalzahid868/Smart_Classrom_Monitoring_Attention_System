@@ -24,7 +24,7 @@ class FaceTracker:
     - If a student disappears for more than max_disappeared frames → remove them.
     """
 
-    def __init__(self, distance_threshold=80, max_disappeared=10):
+    def __init__(self, distance_threshold=80,max_disappeared=10):
         """
         Args:
             distance_threshold: Max pixel distance to consider two centroids
@@ -38,13 +38,13 @@ class FaceTracker:
         self.distance_threshold = distance_threshold
         self.max_disappeared   = max_disappeared
 
-    def _get_centroid(self, landmarks):
+    def get_centroid(self, landmarks):
         """Calculate the center point of a face from its landmarks."""
         x = sum(p[0] for p in landmarks) / len(landmarks)
         y = sum(p[1] for p in landmarks) / len(landmarks)
         return (x, y)
 
-    def _distance(self, p1, p2):
+    def distance(self, p1, p2):
         """Euclidean distance between two (x, y) points."""
         return math.sqrt((p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2)
 
@@ -65,61 +65,46 @@ class FaceTracker:
             # Increment the "missing" counter for every tracked face
             for face_id in list(self.tracked_faces.keys()):
                 self.disappeared[face_id] = self.disappeared.get(face_id, 0) + 1
-
                 # Remove faces that have been missing too long
                 if self.disappeared[face_id] > self.max_disappeared:
                     del self.tracked_faces[face_id]
                     del self.disappeared[face_id]
-
             return self.tracked_faces
 
         # --- Match new detections to existing tracks ---
         current_frame = {}
         already_matched = set()   # prevents two faces claiming the same ID
-
         for landmarks in faces:
-            centroid = self._get_centroid(landmarks)
-
+            centroid = self.get_centroid(landmarks)
             # Find the closest existing track to this new detection
             best_id       = None
             best_distance = float("inf")
-
             for face_id, data in self.tracked_faces.items():
                 if face_id in already_matched:
                     continue  # this track is already taken
-
-                dist = self._distance(centroid, data["centroid"])
-
+                dist = self.distance(centroid, data["centroid"])
                 if dist < self.distance_threshold and dist < best_distance:
                     best_id       = face_id
                     best_distance = dist
-
             # If no existing track matched → this is a new student
             if best_id is None:
                 best_id = self.next_id
                 self.next_id += 1
-
             already_matched.add(best_id)
             self.disappeared[best_id] = 0
-            current_frame[best_id] = {
-                "centroid":  centroid,
-                "landmarks": landmarks
-            }
+            current_frame[best_id] = {"centroid":centroid,"landmarks":landmarks}
 
         # Keep tracks that weren't matched this frame but haven't timed out
         for face_id, data in self.tracked_faces.items():
             if face_id not in current_frame:
                 self.disappeared[face_id] = self.disappeared.get(face_id, 0) + 1
-
                 if self.disappeared[face_id] <= self.max_disappeared:
                     # Carry forward last known position
                     current_frame[face_id] = data
-
         # Clean up the disappeared registry for removed faces
         for face_id in list(self.disappeared.keys()):
             if face_id not in current_frame:
                 del self.disappeared[face_id]
-
         self.tracked_faces = current_frame
         return current_frame
 

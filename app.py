@@ -1,5 +1,5 @@
 import streamlit as st
-import os, tempfile 
+import os, tempfile,cv2 
 from src.multistd_classifier import MultiStudentClassifier
 from src.video_classifier import VideoClassifier
 
@@ -29,12 +29,23 @@ if uploaded_file is not None:
         tmp.write(uploaded_file.read())
         temp_path=tmp.name
     st.success("Video uploaded successfully!")
-    st.video(temp_path)
+    # st.video(temp_path)
+    video_placeholder=st.empty()
+    stats_placeholder=st.empty()
     if st.button("Analyze Button"):
         st.write("Processing started.........")
         if mode=="Single Student":
             classifier=VideoClassifier()
             with st.spinner("Analyzing video ......."):
+                result = classifier.classify_video(temp_path)
+                cap = cv2.VideoCapture(temp_path)
+                while True:
+                    ret, frame = cap.read()
+                    if not ret:
+                        break
+                    video_placeholder.image(frame,channels="BGR")
+
+                cap.release()
                 result=classifier.classify_video(temp_path)
                 st.write(f"Label: {result['final_label']}")
                 st.write(f"Attentive Frames: {result['attentive_frames']}")
@@ -43,6 +54,15 @@ if uploaded_file is not None:
         else:
             classifier=MultiStudentClassifier()
             with st.spinner("Analyzing video ......."):
+                result = classifier.classify_video(temp_path)
+                cap = cv2.VideoCapture(temp_path)
+                while True:
+                    ret, frame = cap.read()
+                    if not ret:
+                        break
+                    video_placeholder.image(frame,channels="BGR")
+
+                cap.release()
                 result=classifier.classify_video(temp_path)
                 st.write(f"Frames Processed: {result['frames_processed']}")
                 st.write(f"Students Detected: {result['students_detected']}")
@@ -53,47 +73,6 @@ if uploaded_file is not None:
                     st.metric(label="Attention Rate", value=f"{counts['attention_rate']:.2f}%")
                     st.metric(label="Attentive Frames", value=counts['attentive_frames'])
                     st.metric(label="Distracted Frames", value=counts['distracted_frames'])
-
-
-
-                    # st.markdown(f"""
-                    #     ### {face_id.replace('_', ' ').title()}
-                    #     **Label:** {label}
-                    #     **Attention Rate:** {counts['attention_rate']:.2f}%
-                    #     **Attentive Frames:** {counts['attentive_frames']}
-                    #     **Distracted Frames:** {counts['distracted_frames']}
-                    #     """)
-
-
-        # with st.spinner("Analyzing video ......."):
-        #     result=classifier.classify_video(temp_path)
-
-        # st.success("Analysis complete!")
-        # st.write(result)
-       
-
-
-# if uploaded_file:
-#     temp="temp"
-#     os.makedirs(temp,exist_ok=True)
-#     temp_path=os.path.join(temp,uploaded_file.name)
-#     with open(temp_path,"wb") as f:
-#         f.write(uploaded_file.getbuffer())
-#     st.success("Video uploaded successfully!")
-#     st.video(temp_path)
-#     if st.button("Analyze Button"):
-#         st.write("Processing started.........")
-
-#         if mode=="Single Student":
-#             classifier=VideoClassifier()
-#         else:
-#             classifier=MultiStudentClassifier()
-#         with st.spinner("Analyzing video ......."):
-#             result=classifier.classify_video(temp)
-
-#         st.success("Analysis complete!")
-#         st.write(result)
-
 
 
 

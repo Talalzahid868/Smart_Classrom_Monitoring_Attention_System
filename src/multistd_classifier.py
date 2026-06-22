@@ -19,8 +19,6 @@ from .EAR import calculate_ear
 from .head_pose import HeadPoseEstimator
 from .attention_score import AttentionScorer
 
-
-# MediaPipe Face Mesh landmark indices for the left and right eye
 LEFT_EYE  = [33, 160, 158, 133, 153, 144]
 RIGHT_EYE = [362, 385, 387, 263, 373, 380]
 
@@ -137,7 +135,7 @@ class MultiStudentClassifier:
                 label, text_col = "Detecting...", (180, 180, 180)
 
             # Student ID tag above the box (filled background for readability)
-            id_text = f"Student {face_id}"
+            id_text = f"Student {face_id+1}"
             (tw, th), _ = cv2.getTextSize(id_text, cv2.FONT_HERSHEY_SIMPLEX, 0.6, 1)
             cv2.rectangle(frame, (x, y - th - 10), (x + tw + 6, y), colour, -1)
             cv2.putText(frame, id_text, (x + 3, y - 5),
@@ -247,18 +245,15 @@ class MultiStudentClassifier:
         if writer:
             writer.release()
             print(f"  Annotated video saved to: {save_video}")
-
         if show_video:
             cv2.destroyAllWindows()
-
         if not student_records:
             return None
-
-        # Build the final per-student report
+       # Build the final per-student report
         report = {}
         for face_id, counts in student_records.items():
             total = counts["attentive"] + counts["distracted"]
-            report[f"student_{face_id}"] = {
+            report[f"student_{face_id+1}"] = {
                 "attentive_frames":  counts["attentive"],
                 "distracted_frames": counts["distracted"],
                 "attention_rate":    round(counts["attentive"] / total * 100, 2)
@@ -272,23 +267,12 @@ class MultiStudentClassifier:
         }
 
 
-# =============================================================================
-# Run this file directly to process a video
-# =============================================================================
-
 if __name__ == "__main__":
-
     classifier = MultiStudentClassifier(
         enhance=True,               # True for compressed/DAISEE-style video
         detection_confidence=0.4    # Lower = catches more distant faces
     )
-
-    result = classifier.classify_video(
-        "215475_tiny.mp4",
-        show_video=True,                      # Open live window
-        save_video="annotated_output.mp4"     # Remove this line if not needed
-    )
-
+    result = classifier.classify_video("215475_tiny.mp4",show_video=True,save_video="annotated_output.mp4")
     print(result)
 
 

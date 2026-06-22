@@ -5,15 +5,10 @@ from .video_processor import load_video, read_frames
 from .landmarks import FaceMeshDetector
 
 def euclidean_distance(p1, p2):
-
-    return math.sqrt(
-        (p1[0] - p2[0])**2 +
-        (p1[1] - p2[1])**2
-    )
+    return math.sqrt((p1[0] - p2[0])**2 +(p1[1] - p2[1])**2)
 
 
 def calculate_ear(eye_points):
-
     p1, p2, p3, p4, p5, p6 = eye_points
     vertical_1 = euclidean_distance(p2, p6)
     vertical_2 = euclidean_distance(p3, p5)
@@ -21,7 +16,7 @@ def calculate_ear(eye_points):
     ear = (vertical_1 + vertical_2) / (2.0 * horizontal)
     return ear
 
-LEFT_EYE = [33, 160, 158, 133, 153, 144]
+LEFT_EYE = [33, 160, 158, 133, 153, 144]  # these are eyes indices in mediapipe according to mediapipe documentation
 RIGHT_EYE = [362, 385, 387, 263, 373, 380]
 
 dataset = load_dataset("DataSet/Attention_labels.csv","DataSet")
